@@ -1,7 +1,7 @@
 import { PlacesService } from './../places.service';
 import { Component, OnInit } from '@angular/core';
 import { Place } from '../place.model';
-import { NavController } from '@ionic/angular';
+import { MenuController, NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-offers',
