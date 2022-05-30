@@ -32,7 +32,13 @@ export class PlacesService {
 
   constructor() {}
 
-  get places() {
+  getAllPlaces() {
     return [...this.placesList];
+  }
+
+  getPlace(placeId: string) {
+    return {
+      ...this.placesList.find((place) => place.id === placeId),
+    };
   }
 }
