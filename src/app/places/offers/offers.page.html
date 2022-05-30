@@ -4,4 +4,28 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content> </ion-content>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-sm="10" offset-sm="1" class="ion-text-center">
+        <ion-card>
+          <ion-list>
+            <ion-item
+              detail
+              *ngFor="let offer of loadedOffers"
+              [routerLink]="['/', 'places', 'tabs', 'offers',offer.id]"
+            >
+              <ion-thumbnail slot="start">
+                <ion-img [src]="offer.imgUrl"></ion-img>
+              </ion-thumbnail>
+              <ion-label>
+                <h2>{{offer.title}}</h2>
+                <p>{{offer.description}}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

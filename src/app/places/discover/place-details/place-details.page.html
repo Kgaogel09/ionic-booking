@@ -6,8 +6,14 @@
     <ion-title>{{loadedPlace.title}}</ion-title>
   </ion-toolbar>
 </ion-header>
-
 <ion-content>
+  <ion-img [src]="loadedPlace.imgUrl"></ion-img>
+  <ion-text>
+    <h1 class="ion-text-center">{{loadedPlace.title}}</h1>
+  </ion-text>
+  <ion-text>
+    <p class="ion-text-center">{{loadedPlace.description}}</p>
+  </ion-text>
   <ion-button color="primary" class="ion-margin" (click)="onBookPlace()"
     >Book</ion-button
   >
