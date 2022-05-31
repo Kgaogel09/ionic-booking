@@ -46,7 +46,7 @@ export class PlaceDetailsPage implements OnInit {
         return modalEl.onDidDismiss();
       })
       .then((resultsData) => {
-        alert(resultsData.data);
+        // alert(resultsData.data);
         if (resultsData.role === 'confirm') {
           alert(`BOOKED!🔖`);
         }
