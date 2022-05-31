@@ -9,10 +9,12 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content>
   <ion-img [src]="selectedPlace.imgUrl"></ion-img>
-  <ion-text>
-    <p>{{ selectedPlace.description }}</p>
-  </ion-text>
-  <ion-button color="success" (click)="onBookPlace()">Book!</ion-button>
+  <div class="ion-padding">
+    <ion-text>
+      <p>{{ selectedPlace.description }}</p>
+    </ion-text>
+    <ion-button color="success" (click)="onBookPlace()">Book!</ion-button>
+  </div>
 </ion-content>

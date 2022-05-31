@@ -8,13 +8,9 @@
 </ion-header>
 <ion-content>
   <ion-img [src]="loadedPlace.imgUrl"></ion-img>
-  <ion-text>
-    <h1 class="ion-text-center">{{loadedPlace.title}}</h1>
-  </ion-text>
-  <ion-text>
-    <p class="ion-text-center">{{loadedPlace.description}}</p>
-  </ion-text>
-  <ion-button color="primary" class="ion-padding" (click)="onBookPlace()"
-    >Book</ion-button
-  >
+  <div class="ion-text-center">
+    <h1>{{loadedPlace.title}}</h1>
+    <p>{{loadedPlace.description}}</p>
+    <ion-button color="primary" (click)="onBookPlace()">Book</ion-button>
+  </div>
 </ion-content>
