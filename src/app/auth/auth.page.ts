@@ -15,6 +15,7 @@ export class AuthPage implements OnInit {
 
   onLogin() {
     this.authService.login();
+    setTimeout(() => {}, 2000);
     this.route.navigateByUrl('/places/tabs/discover');
   }
 }
