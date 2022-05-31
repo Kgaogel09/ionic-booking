@@ -41,6 +41,15 @@ export class PlaceDetailsPage implements OnInit {
         component: BookingModalComponent,
         componentProps: { selectedPlace: this.loadedPlace },
       })
-      .then((modalEl) => modalEl.present());
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+      .then((resultsData) => {
+        alert(resultsData.data);
+        if (resultsData.role === 'confirm') {
+          alert(`BOOKED!🔖`);
+        }
+      });
   }
 }
