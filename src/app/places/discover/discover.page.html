@@ -34,21 +34,25 @@
     <ion-row>
       <ion-col size-sm="10" offset-sm="1" class="ion-text-center">
         <ion-card>
-          <ion-list>
+          <ion-virtual-scroll
+            [items]="listedLoadedPlaces"
+            approxItemHeight="75px"
+          >
             <ion-item
               detail
-              *ngFor="let place of loadedPlaces.slice(1)"
-              [routerLink]="['/', 'places', 'tabs', 'discover', place.id]"
+              *virtualItem="let item"
+              [routerLink]="['/', 'places', 'tabs', 'discover', item.id]"
             >
               <ion-thumbnail slot="start">
-                <ion-img [src]="place.imgUrl"></ion-img>
+                <ion-img [src]="item.imgUrl"></ion-img>
               </ion-thumbnail>
               <ion-label>
-                <h2>{{place.title}}</h2>
-                <p>{{place.description}}</p>
+                <h2>{{item.title}}</h2>
+                <p>{{item.description}}</p>
               </ion-label>
-            </ion-item>
-          </ion-list>
+            </ion-item></ion-virtual-scroll
+          >
+          <!-- <ion-list> </ion-list> -->
         </ion-card>
       </ion-col>
     </ion-row>

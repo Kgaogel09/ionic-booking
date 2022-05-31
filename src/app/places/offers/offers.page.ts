@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 })
 export class OffersPage implements OnInit {
   loadedOffers: Place[];
+  filteredOffers: Place;
 
   constructor(
     private placeService: PlacesService,

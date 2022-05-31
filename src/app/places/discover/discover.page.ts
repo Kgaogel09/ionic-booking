@@ -9,9 +9,11 @@ import { PlacesService } from '../places.service';
 })
 export class DiscoverPage implements OnInit {
   loadedPlaces: Place[];
+  listedLoadedPlaces: Place[];
   constructor(private placeService: PlacesService) {}
 
   ngOnInit() {
     this.loadedPlaces = this.placeService.getAllPlaces();
+    this.listedLoadedPlaces = this.loadedPlaces.slice(1);
   }
 }
