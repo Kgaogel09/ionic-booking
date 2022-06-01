@@ -17,18 +17,7 @@
         <ion-card>
           <ion-list>
             <ion-item-sliding *ngFor="let offer of loadedOffers" #slidingItem>
-              <ion-item
-                detail
-                [routerLink]="['/', 'places', 'tabs', 'offers',offer.id]"
-              >
-                <ion-thumbnail slot="start">
-                  <ion-img [src]="offer.imgUrl"></ion-img>
-                </ion-thumbnail>
-                <ion-label>
-                  <h2>{{offer.title}}</h2>
-                  <p>{{offer.description}}</p>
-                </ion-label>
-              </ion-item>
+              <app-offer-item [offer]="offer"></app-offer-item>
               <ion-item-options>
                 <ion-item-option
                   color="secondary"
