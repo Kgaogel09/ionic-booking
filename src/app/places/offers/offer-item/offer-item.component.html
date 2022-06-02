@@ -1,4 +1,7 @@
-<ion-item [routerLink]="['/', 'places', 'tabs', 'offers', offer.id]">
+<ion-item
+  detail="false"
+  [routerLink]="['/', 'places', 'tabs', 'offers', offer.id]"
+>
   <ion-thumbnail slot="start">
     <ion-img [src]="offer.imgUrl"></ion-img>
   </ion-thumbnail>

@@ -4,19 +4,56 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-list>
-    <ion-item>
-      <ion-label position="floating">Name</ion-label>
-      <ion-input type="text" placeholder="Enter your name"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="floating">Email</ion-label>
-      <ion-input type="email" placeholder="Enter your email"></ion-input>
-    </ion-item>
-  </ion-list>
-  <ion-button color="primary" class="ion-margin" (click)="onLogin()"
-    >Login</ion-button
-  >
+<ion-content class="ion-padding">
+  <form #signUp="ngForm" (ngSubmit)="onSubmit(signUp)">
+    <ion-grid>
+      <ion-row>
+        <ion-col size-sm="10" offset-sm="1">
+          <ion-list>
+            <ion-item>
+              <ion-label position="floating">E-mail</ion-label>
+              <ion-input
+                type="email"
+                name="email"
+                required
+                email
+                ngModel
+              ></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Password</ion-label>
+              <ion-input
+                type="password"
+                name="password"
+                minlength="8"
+                required
+                ngModel
+              ></ion-input>
+            </ion-item> </ion-list
+        ></ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="10" offset-sm="1">
+          <ion-button
+            type="submit"
+            color="primary"
+            class="ion-margin"
+            (click)="onLogin()"
+            expand="block"
+            >Login</ion-button
+          >
+          <ion-button
+            type="submit"
+            color="primary"
+            class="ion-margin"
+            fill="clear"
+            expand="block"
+            >Sign up</ion-button
+          ></ion-col
+        >
+      </ion-row>
+    </ion-grid>
+  </form>
+
   <!-- <ion-spinner name="circles" color="primary" *ngIf="isLoading"></ion-spinner> -->
 </ion-content>
