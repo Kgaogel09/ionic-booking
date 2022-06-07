@@ -10,30 +10,32 @@ import { Place } from 'src/app/places/place.model';
 })
 export class BookingModalComponent implements OnInit {
   @Input() selectedPlace: Place;
-  form: FormGroup;
-  dateValue2 = '';
+  @Input() selectedMode: 'select' | 'random';
+  startDate: string;
+  endDate: number;
 
   constructor(private modalCtrl: ModalController) {}
 
   ngOnInit() {
-    this.form = new FormGroup({
-      title: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required],
-      }),
-      price: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.min(1)],
-      }),
-      description: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(100)],
-      }),
-      date: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required],
-      }),
-    });
+    const availableFrom = new Date(this.selectedPlace.availableFrom);
+    const availableTo = new Date(this.selectedPlace.availableTo);
+
+    if (this.selectedMode === 'random') {
+      this.startDate = new Date(
+        availableFrom.getTime() +
+          Math.random() *
+            (availableTo.getTime() -
+              7 * 24 * 60 * 60 * 1000 -
+              availableFrom.getTime())
+      ).toISOString();
+
+      this.endDate =
+        new Date(this.startDate).getTime() +
+        Math.random() *
+          (new Date(this.startDate).getTime() +
+            6 * 24 * 60 * 60 * 1000 -
+            new Date(this.startDate).getTime());
+    }
   }
 
   onBookPlace() {
@@ -45,9 +47,5 @@ export class BookingModalComponent implements OnInit {
 
   onClose() {
     this.modalCtrl.dismiss(null, 'cancel');
-  }
-
-  formatDate(value: string) {
-    // return format(parseISO(value), 'MMM dd yyyy');
   }
 }

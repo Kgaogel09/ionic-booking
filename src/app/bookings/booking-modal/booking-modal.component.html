@@ -10,8 +10,7 @@
 </ion-header>
 
 <ion-content class="ion-padding ion-text-center">
-  <!-- <ion-img [src]="selectedPlace.imgUrl"></ion-img> -->
-  <form [formGroup]="form">
+  <form (ngSubmit)="onBookPlace()" #f="ngForm">
     <ion-grid>
       <ion-row>
         <ion-col size-sm="10" offset-sm="1">
@@ -38,7 +37,7 @@
         <ion-col size-sm="10" offset-sm="1">
           <ion-item>
             <ion-label position="floating">Number of Guests</ion-label>
-            <ion-select [ngModel]="2" name="guestNumber" required
+            <ion-select [ngModel]="'1'" name="guestNumber" required
               ><ion-select-option value="1">1</ion-select-option
               ><ion-select-option value="2">2</ion-select-option
               ><ion-select-option value="3">3</ion-select-option></ion-select
@@ -49,19 +48,40 @@
       <ion-row>
         <ion-col size-sm="10" offset-sm="1">
           <ion-item>
-            <ion-label>Date From</ion-label>
+            <ion-label>From</ion-label>
             <ion-input [value]="" id="open-date-input"></ion-input>
             <ion-popover trigger="open-date-input" show-backdrop="false">
               <ng-template>
                 <ion-datetime
-                  display-format="MMM DD YYYY"
-                  picker-format="MMM DD YYYY"
+                  dateFormat="dd-mm-yy"
+                  pickerFormat="mm-dd-yy"
                   presentation="date"
-                  ngModel
+                  [ngModel]="startDate"
+                  #dateCtrl="ngModel"
                   name="dateFrom"
                   [min]="selectedPlace.availableFrom.toISOString()"
                   [max]="selectedPlace.availableTo.toISOString()"
-                  #dateCtrl="ngModel"
+                ></ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size-sm="10" offset-sm="1">
+          <ion-item>
+            <ion-label>To</ion-label>
+            <ion-input [value]="" id="date-to"></ion-input>
+            <ion-popover trigger="date-to" show-backdrop="false">
+              <ng-template>
+                <ion-datetime
+                  dateFormat="dd-mm-yy"
+                  pickerFormat="mm-dd-yy"
+                  presentation="date"
+                  [ngModel]="endDate"
+                  name="dateTo"
+                  [min]="selectedPlace.availableFrom.toISOString()"
+                  [max]="selectedPlace.availableTo.toISOString()"
                 ></ion-datetime>
               </ng-template>
             </ion-popover>
