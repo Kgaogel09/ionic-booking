@@ -90,7 +90,11 @@
       </ion-row>
       <ion-row>
         <ion-col size-sm="10" offset-sm="1">
-          <ion-button color="primary" type="submit" expand="block"
+          <ion-button
+            color="primary"
+            type="submit"
+            expand="block"
+            [disabled]="!f.valid || !datesValid"
             >Book!</ion-button
           >
         </ion-col>
