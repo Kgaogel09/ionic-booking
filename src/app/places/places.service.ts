@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { Injectable } from '@angular/core';
+import { AuthService } from '../auth/auth.service';
 import { Place } from './place.model';
 
 @Injectable({
@@ -14,7 +15,8 @@ export class PlacesService {
       'https://static2.mansionglobal.com/production/media/article-images/2f6a5dc3d80ef19f3bc23ddc1e911adf/large_Screen-Shot-2017-12-07-at-12.11.10-PM.png',
       150.99,
       new Date('2022-01-01'),
-      new Date('2022-12-31')
+      new Date('2022-12-31'),
+      'u1'
     ),
     new Place(
       'p2',
@@ -23,7 +25,8 @@ export class PlacesService {
       'https://i.pinimg.com/736x/6e/12/a3/6e12a3c9d28b00988370e1c646ad2d7a.jpg',
       220.99,
       new Date('2022-01-01'),
-      new Date('2022-12-31')
+      new Date('2022-12-31'),
+      'u1'
     ),
     new Place(
       'p3',
@@ -32,11 +35,12 @@ export class PlacesService {
       'https://s3.envato.com/files/123e6f49-8572-4e47-bef5-ac691abed4e2/inline_image_preview.jpg',
       90.99,
       new Date('2022-01-01'),
-      new Date('2022-12-31')
+      new Date('2022-12-31'),
+      'u1'
     ),
   ];
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
   getAllPlaces() {
     return [...this.placesList];
@@ -46,5 +50,25 @@ export class PlacesService {
     return {
       ...this.placesList.find((place) => place.id === placeId),
     };
+  }
+
+  addPlace(
+    title: string,
+    description: string,
+    price: number,
+    dateFrom: Date,
+    dateTo: Date
+  ) {
+    const newPlace = new Place(
+      Math.random().toString(),
+      title,
+      description,
+      'https://i.pinimg.com/736x/6e/12/a3/6e12a3c9d28b00988370e1c646ad2d7.jpg',
+      price,
+      dateFrom,
+      dateTo,
+      this.authService.userId
+    );
+    this.placesList.push(newPlace);
   }
 }
