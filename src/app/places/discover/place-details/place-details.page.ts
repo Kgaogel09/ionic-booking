@@ -1,6 +1,7 @@
+import { Subscription } from 'rxjs';
 import { BookingModalComponent } from './../../../bookings/booking-modal/booking-modal.component';
 import { PlacesService } from './../../places.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Place } from '../../place.model';
 import {
@@ -14,8 +15,9 @@ import {
   templateUrl: './place-details.page.html',
   styleUrls: ['./place-details.page.scss'],
 })
-export class PlaceDetailsPage implements OnInit {
+export class PlaceDetailsPage implements OnInit, OnDestroy {
   loadedPlace: Place;
+  private placeSub: Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -34,8 +36,16 @@ export class PlaceDetailsPage implements OnInit {
         return;
       }
       const placeId = paramMap.get('placeId');
-      this.loadedPlace = this.placeService.getPlace(placeId);
+      this.placeSub = this.placeService.getPlace(placeId).subscribe((place) => {
+        this.loadedPlace = place;
+      });
     });
+  }
+
+  ngOnDestroy() {
+    if (this.placeSub) {
+      this.placeSub.unsubscribe();
+    }
   }
 
   onBookPlace() {

@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { take, map } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Place } from './place.model';
 
@@ -7,7 +9,7 @@ import { Place } from './place.model';
   providedIn: 'root',
 })
 export class PlacesService {
-  private placesList: Place[] = [
+  public placesList = new BehaviorSubject<Place[]>([
     new Place(
       'p1',
       'Manhattan Mansion',
@@ -38,18 +40,19 @@ export class PlacesService {
       new Date('2022-12-31'),
       'u1'
     ),
-  ];
+  ]);
 
   constructor(private authService: AuthService) {}
 
   getAllPlaces() {
-    return [...this.placesList];
+    return this.placesList.asObservable();
   }
 
   getPlace(placeId: string) {
-    return {
-      ...this.placesList.find((place) => place.id === placeId),
-    };
+    return this.placesList.pipe(
+      take(1),
+      map((placesList) => ({ ...placesList.find((p) => p.id === placeId) }))
+    );
   }
 
   addPlace(
@@ -63,12 +66,14 @@ export class PlacesService {
       Math.random().toString(),
       title,
       description,
-      'https://i.pinimg.com/736x/6e/12/a3/6e12a3c9d28b00988370e1c646ad2d7.jpg',
+      'https://images.unsplash.com/photo-1610036615775-f5814e8bd4df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
       price,
       dateFrom,
       dateTo,
       this.authService.userId
     );
-    this.placesList.push(newPlace);
+    this.placesList.pipe(take(1)).subscribe((placeList) => {
+      this.placesList.next(placeList.concat(newPlace));
+    });
   }
 }

@@ -57,6 +57,6 @@ export class NewOfferPage implements OnInit {
       new Date(this.form.value.dateTo)
     );
     this.form.reset();
-    this.navCtrl.navigateBack(['/places/tabs/offers']);
+    this.navCtrl.navigateBack(['/places/tabs/discover']);
   }
 }

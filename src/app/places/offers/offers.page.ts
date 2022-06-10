@@ -1,5 +1,5 @@
 import { PlacesService } from './../places.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Place } from '../place.model';
 import {
   AlertController,
@@ -8,15 +8,16 @@ import {
   NavController,
 } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-offers',
   templateUrl: './offers.page.html',
   styleUrls: ['./offers.page.scss'],
 })
-export class OffersPage implements OnInit {
+export class OffersPage implements OnInit, OnDestroy {
   loadedOffers: Place[];
-  filteredOffers: Place;
+  private placesSub: Subscription;
 
   constructor(
     private placeService: PlacesService,
@@ -26,7 +27,15 @@ export class OffersPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadedOffers = this.placeService.getAllPlaces();
+    this.placesSub = this.placeService.placesList.subscribe((placesList) => {
+      this.loadedOffers = placesList;
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.placesSub) {
+      this.placesSub.unsubscribe();
+    }
   }
 
   onAdd() {
