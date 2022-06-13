@@ -19,6 +19,7 @@ export class DiscoverPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.placesSub = this.placeService.placesList.subscribe((placesList) => {
       this.loadedPlaces = placesList;
+
       this.listedLoadedPlaces = this.loadedPlaces.slice(1);
     });
   }

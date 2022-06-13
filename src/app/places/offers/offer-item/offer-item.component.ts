@@ -8,7 +8,7 @@ import { Place } from '../../place.model';
 })
 export class OfferItemComponent implements OnInit {
   @Input() offer: Place;
-  dummyDate = new Date();
+  // dummyDate = new Date();
   constructor() {}
 
   ngOnInit() {}

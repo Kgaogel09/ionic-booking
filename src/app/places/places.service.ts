@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { take, map } from 'rxjs/operators';
+import { take, map, tap, delay } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Place } from './place.model';
 
@@ -72,8 +72,12 @@ export class PlacesService {
       dateTo,
       this.authService.userId
     );
-    this.placesList.pipe(take(1)).subscribe((placeList) => {
-      this.placesList.next(placeList.concat(newPlace));
-    });
+    return this.placesList.pipe(
+      take(1),
+      delay(2000),
+      tap((placeList) => {
+        this.placesList.next(placeList.concat(newPlace));
+      })
+    );
   }
 }
