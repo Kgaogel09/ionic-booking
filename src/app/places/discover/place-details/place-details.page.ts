@@ -6,9 +6,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Place } from '../../place.model';
 import {
   ActionSheetController,
+  LoadingController,
   ModalController,
   NavController,
 } from '@ionic/angular';
+import { BookingsService } from '../../../bookings/bookings.service';
+import { AuthService } from '../../../auth/auth.service';
 
 @Component({
   selector: 'app-place-details',
@@ -25,7 +28,10 @@ export class PlaceDetailsPage implements OnInit, OnDestroy {
     private router: Router,
     private navCtrl: NavController,
     private modalCtrl: ModalController,
-    private actionSheetCtrl: ActionSheetController
+    private actionSheetCtrl: ActionSheetController,
+    private bookingService: BookingsService,
+    private loadingCtrl: LoadingController,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -50,7 +56,7 @@ export class PlaceDetailsPage implements OnInit, OnDestroy {
 
   onBookPlace() {
     this.router.navigateByUrl('/places/tabs/discover');
-    this.navCtrl.navigateBack('/places/tabs/discover');
+    // this.navCtrl.navigateBack('/places/tabs/discover');
     this.actionSheetCtrl
       .create({
         header: 'Choose an action',
@@ -92,7 +98,31 @@ export class PlaceDetailsPage implements OnInit, OnDestroy {
       .then((resultsData) => {
         console.log(resultsData.data, resultsData.role);
         if (resultsData.role === 'confirm') {
-          alert(`BOOKED!🔖`);
+          this.loadingCtrl
+            .create({
+              message: 'Creating booking...',
+            })
+            .then((loadingEl) => {
+              loadingEl.present();
+              const data = resultsData.data.bookingData;
+              this.bookingService
+                .addBooking(
+                  Math.random().toString(),
+                  this.authService.userId,
+                  this.loadedPlace.id,
+                  this.loadedPlace.title,
+                  this.loadedPlace.imgUrl,
+                  data.firstName,
+                  data.lastName,
+                  data.guestsNumber,
+                  data.startDate,
+                  data.endDate
+                )
+                .subscribe(() => {
+                  loadingEl.dismiss();
+                  this.navCtrl.navigateForward(['/bookings']);
+                });
+            });
         }
       });
   }
