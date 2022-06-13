@@ -20,6 +20,7 @@ import { AuthService } from '../../../auth/auth.service';
 })
 export class PlaceDetailsPage implements OnInit, OnDestroy {
   loadedPlace: Place;
+  isBookable = false;
   private placeSub: Subscription;
 
   constructor(
@@ -44,6 +45,7 @@ export class PlaceDetailsPage implements OnInit, OnDestroy {
       const placeId = paramMap.get('placeId');
       this.placeSub = this.placeService.getPlace(placeId).subscribe((place) => {
         this.loadedPlace = place;
+        this.isBookable = place.userId !== this.authService.userId;
       });
     });
   }
