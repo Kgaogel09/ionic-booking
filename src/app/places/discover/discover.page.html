@@ -14,24 +14,24 @@
       >Bookable Places</ion-segment-button
     >
   </ion-segment>
-  <ion-grid>
+  <ion-grid *ngIf="bookablePlaces.length > 0">
     <ion-row>
       <ion-col size-sm="10" offset-sm="1" class="ion-text-center">
         <ion-card>
           <ion-card-header>
-            <ion-card-title>{{loadedPlaces[0].title}}</ion-card-title>
+            <ion-card-title>{{bookablePlaces[0].title}}</ion-card-title>
             <ion-card-subtitle
-              >{{loadedPlaces[0].price | currency}} / night</ion-card-subtitle
+              >{{bookablePlaces[0].price | currency}} / night</ion-card-subtitle
             >
           </ion-card-header>
-          <ion-img [src]="loadedPlaces[0].imgUrl"></ion-img>
+          <ion-img [src]="bookablePlaces[0].imgUrl"></ion-img>
           <ion-card-content
-            ><p>{{loadedPlaces[0].description}}</p>
+            ><p>{{bookablePlaces[0].description}}</p>
           </ion-card-content>
           <ion-button
             fill="clear"
             color="primary"
-            [routerLink]="['/', 'places', 'tabs', 'discover',loadedPlaces[0].id]"
+            [routerLink]="['/', 'places', 'tabs', 'discover',bookablePlaces[0].id]"
             >More</ion-button
           >
         </ion-card>
@@ -41,6 +41,7 @@
       <ion-col size-sm="10" offset-sm="1" class="ion-text-center">
         <ion-card>
           <ion-virtual-scroll
+            *ngIf="listedLoadedPlaces.length > 0"
             [items]="listedLoadedPlaces"
             approxItemHeight="75px"
           >
@@ -60,6 +61,13 @@
           >
           <!-- <ion-list> </ion-list> -->
         </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-grid *ngIf="!bookablePlaces || bookablePlaces.length <= 0">
+    <ion-row>
+      <ion-col size-sm="10" offset-sm="1" class="ion-text-center">
+        <ion-text> No bookable places! </ion-text>
       </ion-col>
     </ion-row>
   </ion-grid>
