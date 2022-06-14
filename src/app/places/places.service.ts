@@ -56,9 +56,9 @@ export class PlacesService {
 
   constructor(private authService: AuthService, private http: HttpClient) {}
 
-  getAllPlaces() {
-    return this.placesList.asObservable();
-  }
+  // getAllPlaces() {
+  //   return this.placesList.asObservable();
+  // }
 
   getPlace(placeId: string) {
     return this.placesList.pipe(
@@ -149,15 +149,39 @@ export class PlacesService {
     // );
   }
 
+  // updateOffer(placeId: string, title: string, description: string) {
+  //   return this.placesList.pipe(
+  //     take(1),
+  //     delay(2000),
+  //     tap((placesList) => {
+  //       const updatedPlaceIndex = placesList.findIndex(
+  //         (pl) => pl.id === placeId
+  //       );
+  //       const updatedPlaces = [...placesList];
+  //       const oldPlace = updatedPlaces[updatedPlaceIndex];
+  //       updatedPlaces[updatedPlaceIndex] = new Place(
+  //         oldPlace.id,
+  //         title,
+  //         description,
+  //         oldPlace.imgUrl,
+  //         oldPlace.price,
+  //         oldPlace.availableFrom,
+  //         oldPlace.availableTo,
+  //         oldPlace.userId
+  //       );
+  //       this.placesList.next(updatedPlaces);
+  //     })
+  //   );
+  // }
   updateOffer(placeId: string, title: string, description: string) {
+    let updatedPlaces: Place[];
     return this.placesList.pipe(
       take(1),
-      delay(2000),
-      tap((placesList) => {
+      switchMap((placesList) => {
         const updatedPlaceIndex = placesList.findIndex(
           (pl) => pl.id === placeId
         );
-        const updatedPlaces = [...placesList];
+        updatedPlaces = [...placesList];
         const oldPlace = updatedPlaces[updatedPlaceIndex];
         updatedPlaces[updatedPlaceIndex] = new Place(
           oldPlace.id,
@@ -169,6 +193,12 @@ export class PlacesService {
           oldPlace.availableTo,
           oldPlace.userId
         );
+        return this.http.put(
+          `https://bookings-62ee4-default-rtdb.firebaseio.com/offered-places/${placeId}.json`,
+          { ...updatedPlaces[updatedPlaceIndex], id: null }
+        );
+      }),
+      tap(() => {
         this.placesList.next(updatedPlaces);
       })
     );
