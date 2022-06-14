@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { take, map, tap, delay, switchMap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { Place } from './place.model';
@@ -60,12 +60,12 @@ export class PlacesService {
   //   return this.placesList.asObservable();
   // }
 
-  getPlace(placeId: string) {
-    return this.placesList.pipe(
-      take(1),
-      map((placesList) => ({ ...placesList.find((p) => p.id === placeId) }))
-    );
-  }
+  // getPlace(placeId: string) {
+  //   return this.placesList.pipe(
+  //     take(1),
+  //     map((placesList) => ({ ...placesList.find((p) => p.id === placeId) }))
+  //   );
+  // }
 
   fetchAllPlaces() {
     return this.http
@@ -97,6 +97,28 @@ export class PlacesService {
         tap((places) => {
           this.placesList.next(places);
         })
+      );
+  }
+
+  getPlace(placeId: string) {
+    return this.http
+      .get<PlaceData>(
+        `https://bookings-62ee4-default-rtdb.firebaseio.com/offered-places/${placeId}.json`
+      )
+      .pipe(
+        map(
+          (placeData) =>
+            new Place(
+              placeId,
+              placeData.title,
+              placeData.description,
+              placeData.imgUrl,
+              placeData.price,
+              new Date(placeData.availableFrom),
+              new Date(placeData.availableTo),
+              placeData.userId
+            )
+        )
       );
   }
 
@@ -177,6 +199,13 @@ export class PlacesService {
     let updatedPlaces: Place[];
     return this.placesList.pipe(
       take(1),
+      switchMap((placesList) => {
+        if (!placesList) {
+          return this.fetchAllPlaces();
+        } else {
+          return of(placesList);
+        }
+      }),
       switchMap((placesList) => {
         const updatedPlaceIndex = placesList.findIndex(
           (pl) => pl.id === placeId

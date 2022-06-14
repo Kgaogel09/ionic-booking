@@ -24,7 +24,7 @@
         <ion-item-options>
           <ion-item-option
             color="secondary"
-            [routerLink]="['/', 'places', 'tabs', 'offers','edit',offer.id]"
+            [routerLink]="'/places/tabs/offers/edit' + offer.id"
             (click)="onEdit(slidingItem)"
             ><ion-icon name="create" slot="icon-only"></ion-icon
           ></ion-item-option>

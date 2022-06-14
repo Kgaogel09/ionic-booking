@@ -14,6 +14,7 @@ import { PlacesService } from '../../places.service';
 export class EditOfferPage implements OnInit, OnDestroy {
   loadedOffer: Place;
   form: FormGroup;
+  isLoading = false;
   private placeSub: Subscription;
 
   constructor(
@@ -28,10 +29,11 @@ export class EditOfferPage implements OnInit, OnDestroy {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (!paramMap.has('placeId')) {
         //redirect
-        this.navCtrl.navigateBack(['/places/tabs/discover']);
+        this.navCtrl.navigateBack(['/places/tabs/offers']);
         return;
       }
       const placeId = paramMap.get('placeId');
+      this.isLoading = true;
       this.placeSub = this.placeService.getPlace(placeId).subscribe((place) => {
         this.loadedOffer = place;
         this.form = new FormGroup({
@@ -45,6 +47,7 @@ export class EditOfferPage implements OnInit, OnDestroy {
           }),
         });
       });
+      this.isLoading = false;
     });
   }
 
