@@ -140,7 +140,7 @@ export class PlacesService {
       Math.random().toString(),
       title,
       description,
-      'https://images.unsplash.com/photo-1610036615775-f5814e8bd4df?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80',
+      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8cGVudGhvdXNlc3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60',
       price,
       dateFrom,
       dateTo,

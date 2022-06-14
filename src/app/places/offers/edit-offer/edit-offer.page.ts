@@ -2,7 +2,11 @@ import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController, LoadingController } from '@ionic/angular';
+import {
+  NavController,
+  LoadingController,
+  AlertController,
+} from '@ionic/angular';
 import { Place } from '../../place.model';
 import { PlacesService } from '../../places.service';
 
@@ -22,32 +26,46 @@ export class EditOfferPage implements OnInit, OnDestroy {
     private placeService: PlacesService,
     private router: Router,
     private navCtrl: NavController,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    private alertCtrl: AlertController
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (!paramMap.has('placeId')) {
         //redirect
         this.navCtrl.navigateBack(['/places/tabs/offers']);
         return;
       }
-      const placeId = paramMap.get('placeId');
       this.isLoading = true;
-      this.placeSub = this.placeService.getPlace(placeId).subscribe((place) => {
-        this.loadedOffer = place;
-        this.form = new FormGroup({
-          title: new FormControl(this.loadedOffer.title, {
-            updateOn: 'blur',
-            validators: [Validators.required],
-          }),
-          description: new FormControl(this.loadedOffer.description, {
-            updateOn: 'blur',
-            validators: [Validators.required, Validators.maxLength(100)],
-          }),
-        });
-      });
-      this.isLoading = false;
+      const placeId = paramMap.get('placeId');
+      this.placeSub = this.placeService.getPlace(placeId).subscribe(
+        (place) => {
+          this.loadedOffer = place;
+          this.form = new FormGroup({
+            title: new FormControl(this.loadedOffer.title, {
+              updateOn: 'blur',
+              validators: [Validators.required],
+            }),
+            description: new FormControl(this.loadedOffer.description, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.maxLength(100)],
+            }),
+          });
+          this.isLoading = false;
+        },
+        (error) => {
+          this.alertCtrl
+            .create({
+              header: 'An error occurred',
+              message: 'Places could not be found',
+              buttons: [{ text: 'okay' }],
+            })
+            .then((alertEl) => {
+              alertEl.present();
+            });
+        }
+      );
     });
   }
 

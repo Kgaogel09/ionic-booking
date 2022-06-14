@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Place } from '../../place.model';
 import {
   ActionSheetController,
+  AlertController,
   LoadingController,
   ModalController,
   NavController,
@@ -21,6 +22,7 @@ import { AuthService } from '../../../auth/auth.service';
 export class PlaceDetailsPage implements OnInit, OnDestroy {
   loadedPlace: Place;
   isBookable = false;
+  isLoading = false;
   private placeSub: Subscription;
 
   constructor(
@@ -32,7 +34,8 @@ export class PlaceDetailsPage implements OnInit, OnDestroy {
     private actionSheetCtrl: ActionSheetController,
     private bookingService: BookingsService,
     private loadingCtrl: LoadingController,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertCtrl: AlertController
   ) {}
 
   ngOnInit() {
@@ -43,10 +46,32 @@ export class PlaceDetailsPage implements OnInit, OnDestroy {
         return;
       }
       const placeId = paramMap.get('placeId');
-      this.placeSub = this.placeService.getPlace(placeId).subscribe((place) => {
-        this.loadedPlace = place;
-        this.isBookable = place.userId !== this.authService.userId;
-      });
+      this.isLoading = true;
+      this.placeSub = this.placeService.getPlace(placeId).subscribe(
+        (place) => {
+          this.loadedPlace = place;
+          this.isBookable = place.userId !== this.authService.userId;
+          this.isLoading = false;
+        },
+        (error) => {
+          this.alertCtrl
+            .create({
+              header: 'An error occurred',
+              message: 'Places could not be found',
+              buttons: [
+                {
+                  text: 'okay',
+                  handler: () => {
+                    this.router.navigateByUrl('/places/tabs/discover');
+                  },
+                },
+              ],
+            })
+            .then((alertEl) => {
+              alertEl.present();
+            });
+        }
+      );
     });
   }
 

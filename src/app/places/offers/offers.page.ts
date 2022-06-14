@@ -25,8 +25,7 @@ export class OffersPage implements OnInit, OnDestroy {
     private placeService: PlacesService,
     private navCtrl: NavController,
     private alertCtrl: AlertController,
-    private router: Router,
-    private loadingCtrl: LoadingController
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -43,18 +42,9 @@ export class OffersPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.isLoading = true;
-    if (this.isLoading) {
-      this.loadingCtrl
-        .create({
-          message: 'Loading',
-        })
-        .then((loadingEl) => {
-          loadingEl.present();
-        });
-    }
-    this.placeService.fetchAllPlaces().subscribe(() => {
+
+    this.placesSub = this.placeService.fetchAllPlaces().subscribe(() => {
       this.isLoading = false;
-      this.loadingCtrl.dismiss();
     });
   }
 
