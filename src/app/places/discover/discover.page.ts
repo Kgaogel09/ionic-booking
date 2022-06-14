@@ -1,6 +1,6 @@
 import { Subscription } from 'rxjs';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SegmentChangeEventDetail } from '@ionic/angular';
+import { SegmentChangeEventDetail, LoadingController } from '@ionic/angular';
 import { Place } from '../place.model';
 import { PlacesService } from '../places.service';
 import { AuthService } from '../../auth/auth.service';
@@ -14,11 +14,13 @@ export class DiscoverPage implements OnInit, OnDestroy {
   loadedPlaces: Place[];
   listedLoadedPlaces: Place[];
   bookablePlaces: Place[];
+  isLoading = false;
   private placesSub: Subscription;
 
   constructor(
     private placeService: PlacesService,
-    private authService: AuthService
+    private authService: AuthService,
+    private loadingCtrl: LoadingController
   ) {}
 
   ngOnInit() {
@@ -29,6 +31,24 @@ export class DiscoverPage implements OnInit, OnDestroy {
       this.listedLoadedPlaces = this.bookablePlaces.slice(1);
     });
   }
+
+  ionViewWillEnter() {
+    this.isLoading = true;
+    if (this.isLoading) {
+      this.loadingCtrl
+        .create({
+          message: 'Loading',
+        })
+        .then((loadingEl) => {
+          loadingEl.present();
+        });
+    }
+    this.placeService.fetchAllPlaces().subscribe(() => {
+      this.isLoading = false;
+      this.loadingCtrl.dismiss();
+    });
+  }
+
   ngOnDestroy() {
     if (this.loadedPlaces) {
       this.placesSub.unsubscribe();
