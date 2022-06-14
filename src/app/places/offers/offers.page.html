@@ -11,8 +11,14 @@
 </ion-header>
 
 <ion-content>
+  <div class="ion-text-center" *ngIf="loadedOffers.length <= 0">
+    <p>No Offers found, Please create a new offer. 🙃</p>
+    <ion-button color="primary" routerLink="/places/tabs/offers/new"
+      >New Offer</ion-button
+    >
+  </div>
   <ion-card>
-    <ion-list>
+    <ion-list *ngIf="loadedOffers.length > 0 && !isLoading">
       <ion-item-sliding *ngFor="let offer of loadedOffers" #slidingItem>
         <app-offer-item [offer]="offer"></app-offer-item>
         <ion-item-options>
@@ -28,8 +34,5 @@
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
-    <ion-text *ngIf="loadedOffers.length <= 0">
-      <p>No Offers</p>
-    </ion-text>
   </ion-card>
 </ion-content>

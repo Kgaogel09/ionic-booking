@@ -4,6 +4,7 @@ import { Place } from '../place.model';
 import {
   AlertController,
   IonItemSliding,
+  LoadingController,
   MenuController,
   NavController,
 } from '@ionic/angular';
@@ -17,13 +18,15 @@ import { Subscription } from 'rxjs';
 })
 export class OffersPage implements OnInit, OnDestroy {
   loadedOffers: Place[];
+  isLoading = false;
   private placesSub: Subscription;
 
   constructor(
     private placeService: PlacesService,
     private navCtrl: NavController,
     private alertCtrl: AlertController,
-    private router: Router
+    private router: Router,
+    private loadingCtrl: LoadingController
   ) {}
 
   ngOnInit() {
@@ -36,6 +39,23 @@ export class OffersPage implements OnInit, OnDestroy {
     if (this.placesSub) {
       this.placesSub.unsubscribe();
     }
+  }
+
+  ionViewWillEnter() {
+    this.isLoading = true;
+    if (this.isLoading) {
+      this.loadingCtrl
+        .create({
+          message: 'Loading',
+        })
+        .then((loadingEl) => {
+          loadingEl.present();
+        });
+    }
+    this.placeService.fetchAllPlaces().subscribe(() => {
+      this.isLoading = false;
+      this.loadingCtrl.dismiss();
+    });
   }
 
   onAdd() {
