@@ -17,7 +17,10 @@
         <ion-list>
           <ion-item-sliding *ngFor="let item of loadedBookings" #slidingBooking>
             <ion-item>
-              <ion-label>
+              <ion-avatar>
+                <ion-img [src]="item.placeImage"></ion-img>
+              </ion-avatar>
+              <ion-label class="ion-padding">
                 <h4>{{item.placeTitle}}</h4>
                 <p>
                   {{item.guestNumber > 1 && item.guestNumber !== 0 ? 'Guests:':

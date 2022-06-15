@@ -82,15 +82,27 @@ export class BookingsService {
   }
 
   cancelBooking(bookingId: string) {
-    return this.bookings.pipe(
-      take(1),
-      delay(1000),
-      tap((bookings) => {
-        this._bookings.next(
-          bookings.filter((booking) => booking.id !== bookingId)
-        );
-      })
-    );
+    return this.http
+      .delete(
+        `https://bookings-62ee4-default-rtdb.firebaseio.com/bookings/${bookingId}.json`
+      )
+      .pipe(
+        switchMap(() => this.bookings),
+        take(1),
+        tap((bookings) => {
+          this._bookings.next(bookings.filter((b) => b.id !== bookingId));
+        })
+      );
+
+    // return this.bookings.pipe(
+    //   take(1),
+    //   delay(1000),
+    //   tap((bookings) => {
+    //     this._bookings.next(
+    //       bookings.filter((booking) => booking.id !== bookingId)
+    //     );
+    //   })
+    // );
   }
 
   fetchBookings() {
@@ -108,8 +120,8 @@ export class BookingsService {
                   key,
                   bookingData[key].placeId,
                   bookingData[key].userId,
-                  bookingData[key].placeImage,
                   bookingData[key].placeTitle,
+                  bookingData[key].placeImage,
                   bookingData[key].firstName,
                   bookingData[key].lastName,
                   bookingData[key].guestNumber,
