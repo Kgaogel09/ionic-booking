@@ -195,12 +195,13 @@ export class PlacesService {
   //     })
   //   );
   // }
+
   updateOffer(placeId: string, title: string, description: string) {
     let updatedPlaces: Place[];
     return this.placesList.pipe(
       take(1),
       switchMap((placesList) => {
-        if (!placesList) {
+        if (!placesList || placesList.length <= 0) {
           return this.fetchAllPlaces();
         } else {
           return of(placesList);

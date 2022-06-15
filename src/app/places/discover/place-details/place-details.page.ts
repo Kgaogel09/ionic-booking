@@ -42,7 +42,7 @@ export class PlaceDetailsPage implements OnInit, OnDestroy {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (!paramMap.has('placeId')) {
         //redirect
-        this.router.navigate(['/places/tabs/discover']);
+        this.router.navigateByUrl('/places/tabs/discover');
         return;
       }
       const placeId = paramMap.get('placeId');

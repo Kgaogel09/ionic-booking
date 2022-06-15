@@ -17,7 +17,9 @@ import { PlacesService } from '../../places.service';
 })
 export class EditOfferPage implements OnInit, OnDestroy {
   loadedOffer: Place;
+  // form: FormGroup;
   form: FormGroup;
+  placeId: string;
   isLoading = false;
   private placeSub: Subscription;
 
@@ -30,49 +32,51 @@ export class EditOfferPage implements OnInit, OnDestroy {
     private alertCtrl: AlertController
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (!paramMap.has('placeId')) {
-        //redirect
-        this.navCtrl.navigateBack(['/places/tabs/offers']);
+        this.navCtrl.navigateBack('/places/tabs/offers');
         return;
       }
+      this.placeId = paramMap.get('placeId');
       this.isLoading = true;
-      const placeId = paramMap.get('placeId');
-      this.placeSub = this.placeService.getPlace(placeId).subscribe(
-        (place) => {
-          this.loadedOffer = place;
-          this.form = new FormGroup({
-            title: new FormControl(this.loadedOffer.title, {
-              updateOn: 'blur',
-              validators: [Validators.required],
-            }),
-            description: new FormControl(this.loadedOffer.description, {
-              updateOn: 'blur',
-              validators: [Validators.required, Validators.maxLength(100)],
-            }),
-          });
-          this.isLoading = false;
-        },
-        (error) => {
-          this.alertCtrl
-            .create({
-              header: 'An error occurred',
-              message: 'Places could not be found',
-              buttons: [{ text: 'okay' }],
-            })
-            .then((alertEl) => {
-              alertEl.present();
+      this.placeSub = this.placeService
+        .getPlace(paramMap.get('placeId'))
+        .subscribe(
+          (place) => {
+            this.loadedOffer = place;
+            this.form = new FormGroup({
+              title: new FormControl(this.loadedOffer.title, {
+                updateOn: 'blur',
+                validators: [Validators.required],
+              }),
+              description: new FormControl(this.loadedOffer.description, {
+                updateOn: 'blur',
+                validators: [Validators.required, Validators.maxLength(180)],
+              }),
             });
-        }
-      );
+            this.isLoading = false;
+          },
+          (error) => {
+            this.alertCtrl
+              .create({
+                header: 'An error occurred!',
+                message: 'Place could not be fetched. Please try again later.',
+                buttons: [
+                  {
+                    text: 'Okay',
+                    handler: () => {
+                      this.router.navigate(['/places/tabs/offers']);
+                    },
+                  },
+                ],
+              })
+              .then((alertEl) => {
+                alertEl.present();
+              });
+          }
+        );
     });
-  }
-
-  ngOnDestroy() {
-    if (this.placeSub) {
-      this.placeSub.unsubscribe();
-    }
   }
 
   onEditOffer() {
@@ -81,22 +85,51 @@ export class EditOfferPage implements OnInit, OnDestroy {
     }
     this.loadingCtrl
       .create({
-        message: 'Editing Offer...',
+        message: 'Updating place...',
       })
       .then((loadingEl) => {
         loadingEl.present();
+        this.placeService
+          .updateOffer(
+            this.loadedOffer.id,
+            this.form.value.title,
+            this.form.value.description
+          )
+          .subscribe(() => {
+            loadingEl.dismiss();
+            this.form.reset();
+            this.router.navigate(['/places/tabs/offers']);
+          });
       });
-    console.log(this.form.value);
-    this.placeService
-      .updateOffer(
-        this.loadedOffer.id,
-        this.form.value.title,
-        this.form.value.description
-      )
-      .subscribe(() => {
-        this.loadingCtrl.dismiss();
-        this.form.reset();
-        this.navCtrl.navigateBack(['/places/tabs/offers']);
-      });
+  }
+
+  // onEditOffer() {
+  //   if (!this.form.valid) {
+  //     return;
+  //   }
+  //   this.loadingCtrl
+  //     .create({
+  //       message: 'Editing Offer...',
+  //     })
+  //     .then((loadingEl) => {
+  //       loadingEl.present();
+  //       this.placeService
+  //         .updateOffer(
+  //           this.loadedOffer.id,
+  //           this.form.value.title,
+  //           this.form.value.description
+  //         )
+  //         .subscribe(() => {
+  //           this.loadingCtrl.dismiss();
+  //           this.form.reset();
+  //           this.navCtrl.navigateBack(['/places/tabs/offers']);
+  //         });
+  //     });
+  // }
+
+  ngOnDestroy() {
+    if (this.placeSub) {
+      this.placeSub.unsubscribe();
+    }
   }
 }
