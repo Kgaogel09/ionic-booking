@@ -1,6 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 /* eslint-disable no-underscore-dangle */
 import { BehaviorSubject } from 'rxjs';
-import { take, map, tap, delay } from 'rxjs/operators';
+import { take, map, tap, delay, switchMap } from 'rxjs/operators';
 
 import { Injectable } from '@angular/core';
 import { Booking } from './bookings.model';
@@ -12,7 +13,7 @@ import { AuthService } from '../auth/auth.service';
 export class BookingsService {
   private _bookings = new BehaviorSubject<Booking[]>([]);
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private http: HttpClient) {}
 
   get bookings() {
     return this._bookings.asObservable();
@@ -30,6 +31,7 @@ export class BookingsService {
     dateFrom: Date,
     dateTo: Date
   ) {
+    let generatedId: string;
     const newBooking = new Booking(
       Math.random().toString(),
       placeId,
@@ -42,13 +44,29 @@ export class BookingsService {
       dateFrom,
       dateTo
     );
-    return this.bookings.pipe(
-      take(1),
-      delay(1000),
-      tap((bookings) => {
-        this._bookings.next(bookings.concat(newBooking));
-      })
-    );
+    return this.http
+      .post<{ name: string }>(
+        'https://bookings-62ee4-default-rtdb.firebaseio.com/bookings.json',
+        { ...newBooking, id: null }
+      )
+      .pipe(
+        switchMap((resData) => {
+          generatedId = resData.name;
+          return this.bookings;
+        }),
+        take(1),
+        tap((bookings) => {
+          newBooking.id = generatedId;
+          this._bookings.next(bookings.concat(newBooking));
+        })
+      );
+    // return this.bookings.pipe(
+    //   take(1),
+    //   delay(1000),
+    //   tap((bookings) => {
+    //     this._bookings.next(bookings.concat(newBooking));
+    //   })
+    // );
   }
 
   cancelBooking(bookingId: string) {
