@@ -56,9 +56,9 @@ export class PlacesService {
 
   constructor(private authService: AuthService, private http: HttpClient) {}
 
-  // getAllPlaces() {
-  //   return this.placesList.asObservable();
-  // }
+  getAllPlaces() {
+    return this.placesList.asObservable();
+  }
 
   // getPlace(placeId: string) {
   //   return this.placesList.pipe(
